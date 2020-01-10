@@ -2,15 +2,21 @@ const canvas = document.getElementById("jsCanvas");
 const ctx = canvas.getContext("2d"); // canvas를 pixel 단위로 다루기 위해
 const colors = document.getElementsByClassName("jsColor");
 const range = document.getElementById("jsRange");
+const mode = document.getElementById("jsMode");
+
+const INITIAL_COLOR = "#2c2c2c";
 
 // for the Pixel Maniplation (canvas 픽셀의 크기를 지정)
 canvas.width = canvas.offsetWidth;
 canvas.height = canvas.offsetHeight;
 
-ctx.strokeStyle = "#2c2c2c"; // context 내부에서 지정되는 line color (default로 지정)
+ctx.strokeStyle = INITIAL_COLOR; // context 내부에서 지정되는 line color (default로 지정)
+ctx.fillStyle = INITIAL_COLOR;
 ctx.lineWidth = 2.5; //
+//ctx.globalCompositeOperation = "destination-over";
 
 let painting = false;
+let filling = false;
 
 const stopPainting = () => (painting = false);
 const startPainting = () => (painting = true);
@@ -32,6 +38,7 @@ const onMouseMove = event => {
 const handleColorClick = event => {
   const color = event.target.style.backgroundColor;
   ctx.strokeStyle = color;
+  ctx.fillStyle = color; // color를 click 했을때, fill color도 동시에 지정.
 };
 
 const handleRangeChange = event => {
@@ -39,11 +46,28 @@ const handleRangeChange = event => {
   ctx.lineWidth = size;
 };
 
+const handleModeClick = () => {
+  if (filling === true) {
+    filling = false;
+    mode.innerText = "Fill";
+  } else {
+    filling = true;
+    mode.innerText = "Paint";
+  }
+};
+
+const handleCanvasClick = () => {
+  if (filling) {
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+};
+
 if (canvas) {
   canvas.addEventListener("mousemove", onMouseMove);
   canvas.addEventListener("mousedown", startPainting);
   canvas.addEventListener("mouseup", stopPainting);
   canvas.addEventListener("mouseleave", stopPainting);
+  canvas.addEventListener("click", handleCanvasClick);
 }
 
 // Array.from(object) // object 로부터 array를 만들어준다
@@ -53,4 +77,8 @@ Array.from(colors).forEach(color =>
 
 if (range) {
   range.addEventListener("input", handleRangeChange);
+}
+
+if (mode) {
+  mode.addEventListener("click", handleModeClick);
 }
