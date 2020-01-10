@@ -1,11 +1,12 @@
 const canvas = document.getElementById("jsCanvas");
 const ctx = canvas.getContext("2d"); // canvas를 pixel 단위로 다루기 위해
+const colors = document.getElementsByClassName("jsColor");
 
 // for the Pixel Maniplation (canvas 픽셀의 크기를 지정)
 canvas.width = canvas.offsetWidth;
 canvas.height = canvas.offsetHeight;
 
-ctx.strokeStyle = "#2c2c2c"; // context 내부에서 지정되는 line color
+ctx.strokeStyle = "#2c2c2c"; // context 내부에서 지정되는 line color (default로 지정)
 ctx.lineWidth = 2.5; //
 
 let painting = false;
@@ -27,8 +28,9 @@ const onMouseMove = event => {
   }
 };
 
-const onMouseDown = event => {
-  painting = true;
+const handleColorClick = event => {
+  const color = event.target.style.backgroundColor;
+  ctx.strokeStyle = color;
 };
 
 if (canvas) {
@@ -37,3 +39,8 @@ if (canvas) {
   canvas.addEventListener("mouseup", stopPainting);
   canvas.addEventListener("mouseleave", stopPainting);
 }
+
+// Array.from(object) // object 로부터 array를 만들어준다
+Array.from(colors).forEach(color =>
+  color.addEventListener("click", handleColorClick)
+);
