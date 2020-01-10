@@ -1,6 +1,7 @@
 const canvas = document.getElementById("jsCanvas");
 const ctx = canvas.getContext("2d"); // canvas를 pixel 단위로 다루기 위해
 const colors = document.getElementsByClassName("jsColor");
+const range = document.getElementById("jsRange");
 
 // for the Pixel Maniplation (canvas 픽셀의 크기를 지정)
 canvas.width = canvas.offsetWidth;
@@ -18,11 +19,11 @@ const onMouseMove = event => {
   const x = event.offsetX;
   const y = event.offsetY;
   if (!painting) {
-    console.log("creating path in ", x, y);
+    // console.log("creating path in ", x, y);
     ctx.beginPath(); // path 는 line (현재 마우스 위치가 starting point) , click 하면 path 가 만들어지지 않는다.
     ctx.moveTo(x, y);
   } else {
-    console.log("creating line in ", x, y);
+    // console.log("creating line in ", x, y);
     ctx.lineTo(x, y); // previous position 에서 현재 위치까지 선을 잇는다
     ctx.stroke(); // stroke the current sub-path with the current stroke style (획을 긋는것)
   }
@@ -31,6 +32,11 @@ const onMouseMove = event => {
 const handleColorClick = event => {
   const color = event.target.style.backgroundColor;
   ctx.strokeStyle = color;
+};
+
+const handleRangeChange = event => {
+  const size = event.target.value;
+  ctx.lineWidth = size;
 };
 
 if (canvas) {
@@ -44,3 +50,7 @@ if (canvas) {
 Array.from(colors).forEach(color =>
   color.addEventListener("click", handleColorClick)
 );
+
+if (range) {
+  range.addEventListener("input", handleRangeChange);
+}
